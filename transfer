@@ -1,0 +1,379 @@
+/*************************************************************************************************************************
+*   main.cpp
+*   BinarySearchTree
+*
+*   Created by Zachary Torricelli on 3/18/19.
+*   Copyright © 2019 Zachary Torricelli. All rights reserved.
+*
+*   Implement your binary search tree.
+*   You must implement all the following functions/ algorithms (in-order tree traversal, search for a particular key in a
+*   binary search tree, find the minimum and maximum, find the successor of a given node x [must test both the
+*   situations], insert a new key, delete a key [must test all the situations]) for binary search trees
+*
+*************************************************************************************************************************/
+
+#include <iostream>
+#include <iomanip>
+#define SIZE 11
+
+using namespace std;
+
+
+// Struct used to create a node
+struct node
+{
+    
+    int data;
+    node *leftChild;
+    node *rightChild;
+    
+};
+
+
+// Global variable
+node *root = NULL;
+
+
+// Function prototypes
+struct node *newNode(int);
+struct node* insert(node*, int);
+int minimumValue(node*);
+int maximumValue(node*);
+struct node* search(node*, int);
+void printTreeInOrder(node*);
+
+
+
+// Main driver function
+int main()
+{
+    
+    int myArray[SIZE] = { 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9 };
+    int choice = 7;
+    int searchValue = 0;
+    node *goal;
+    
+    
+    // Displays a welcome message to the console
+    cout << "Welcome to Zac's Binary Search Tree!" << endl;
+    cout << "Please enter a number (1-7)." << endl << endl;
+    
+    
+    do
+    {
+        
+        // Displays a menu to the console
+        cout << "1. View Binary Tree " << endl;
+        cout << "2. Insert New Key" << endl;
+        cout << "3. Find Minimum and Maximum Value" << endl;
+        cout << "4. Search Tree" << endl;
+        cout << "5. Quick Sort" << endl;
+        cout << "6. Print Tree" << endl;
+        cout << "7. Exit" << endl << endl;
+        
+        
+        cin >> choice;
+        
+        
+        // Makes sure the user inputs a valid option
+        while (cin.fail())
+        {
+            
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << endl << "Please enter a number (1-7)." << endl << endl;
+            cin >> choice;
+            
+        }
+        
+        
+        switch (choice)
+        {
+                
+                // Case 1 will perform Selection Sort
+            case 1:
+                
+                system("CLS");
+                
+                cout << "Current Binary Tree Elements: " << endl;
+                
+                for(int i = 0; i < SIZE; i++)
+                {
+                    
+                    cout << myArray[i] << "\t";
+                    
+                }
+                
+                cout << endl << endl;
+                
+                root = insert(root, 15);
+                insert(root, 6);
+                insert(root, 18);
+                insert(root, 3);
+                insert(root, 7);
+                insert(root, 17);
+                insert(root, 20);
+                insert(root, 2);
+                insert(root, 4);
+                insert(root, 13);
+                insert(root, 9);
+                
+                break;
+                
+                
+                // Case 2 will perform Bubble Sort
+            case 2:
+                
+                system("CLS");
+                
+                cout << "Premade Binary Tree" << endl << endl;
+                
+                break;
+                
+                
+                // Case 3 will find the minimum and maximum value in the Binary Search Tree
+            case 3:
+                
+                system("CLS");
+                
+                cout << "The minimum value is: " << minimumValue(root) << endl << endl;
+                
+                cout << "The maximum value is: " << maximumValue(root) << endl << endl;
+                
+                
+                break;
+                
+                // Case 4 will perform a Search of the Tree
+            case 4:
+                
+                system("CLS");
+                
+                cout << "What value would you like to search for? " << endl;
+                cin >> searchValue;
+                cout << endl << endl;
+                
+                
+                goal = search(root, searchValue);
+                
+                if(goal)
+                {
+                    
+                    cout << "Search Key Found: " << goal->data << endl;
+                    
+                }
+                
+                else
+                {
+                    
+                    cout << "Search Key Not Found" << endl;
+                    
+                }
+                
+                break;
+                
+                // Case 5 will perform Quick Sort
+            case 5:
+                
+                system("CLS");
+                
+                cout << "_______________________________" << endl << endl;
+                
+                cout << "Original Arrays" << endl;
+                
+                cout << "_______________________________" << endl << endl;
+                
+                
+                break;
+                
+                
+                // Case 6 will perform Heap Sort
+            case 6:
+                
+                system("CLS");
+                
+                cout << "_______________________________" << endl << endl;
+                
+                cout << "Original Arrays" << endl << endl;
+                
+                cout << "_______________________________" << endl << endl;
+                
+             
+                
+                break;
+                
+                
+                // Case 7 will exit the program
+            case 7:
+                
+                exit(0);
+                
+                
+                // Default case will collect the invalid options input and let the user try again
+            default:
+                
+                system("CLS");
+                cout << "Invalid selection. Try again" << endl;
+                
+        }
+        
+    } while (choice != 7);
+    
+
+    
+    
+
+ 
+    
+    
+    
+   
+    
+    return 0;
+    
+}
+
+
+// Function used to create a new node
+struct node *newNode(int data)
+{
+    // Creates a new node
+    struct node *temp =  (struct node *)malloc(sizeof(struct node));
+    
+    temp->data = data;
+    
+    temp->leftChild = temp->rightChild = NULL;
+    
+    // Returns the new node
+    return temp;
+    
+}
+
+
+// Function to insert a new node in the binary search tree
+struct node* insert(node* node, int data)
+{
+    
+    // Checks if the tree is empty
+    if (node == NULL)
+    {
+        
+        return (newNode(data));
+        
+    }
+    
+    // Otherwise, carry on insertion
+    else
+    {
+        
+        if (data <= node->data)
+        {
+        
+            node->leftChild = insert(node->leftChild, data);
+            
+        }
+        
+        else
+        {
+            
+            node->rightChild = insert(node->rightChild, data);
+            
+        }
+        
+        
+        // Returns the new node
+        return node;
+    }
+    
+}
+
+
+
+// Function used to find the minimum value in the binary tree
+int minimumValue(node *node)
+{
+    
+    // Node declaraton
+    struct node *current = node;
+    
+    // While loop to search down to find the leftmost leaf
+    while (current->leftChild != NULL)
+    {
+        
+        current = current->leftChild;
+        
+    }
+    
+    // Returns the minimum value
+    return(current->data);
+    
+}
+
+
+
+// Function used to find the maximum value in the binary tree
+int maximumValue(node *node)
+{
+    
+    // Node declaraton
+    struct node *current = node;
+    
+    // While loop to search down to find the leftmost leaf
+    while (current->rightChild != NULL)
+    {
+        
+        current = current->rightChild;
+        
+    }
+    
+    // Returns the minimum value
+    return(current->data);
+    
+}
+
+
+
+// Function used to search for a particular value in the binary search tree
+struct node* search(node* node, int data)
+{
+    
+    
+    if (node == NULL || node->data == data)
+    {
+        
+        return node;
+        
+    }
+    
+    
+    if (node->data < data)
+    {
+        
+        return search(node->rightChild, data);
+        
+    }
+    
+    
+    return search(node->leftChild, data);
+    
+}
+
+
+
+// Recursive function used to print the binary tree in order
+void printTreeInOrder(node *root)
+{
+    
+    if (root != NULL)
+    {
+        
+        printTreeInOrder(root->leftChild);
+        
+        cout << root->data << " " << endl;
+        
+        printTreeInOrder(root->rightChild);
+        
+    }
+    
+}
+
+
