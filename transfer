@@ -26,6 +26,7 @@ struct node
     int data;
     node *leftChild;
     node *rightChild;
+    node *parent;
     
 };
 
@@ -35,11 +36,13 @@ node *root = NULL;
 
 
 // Function prototypes
-struct node *newNode(int);
-struct node* insert(node*, int);
+node *newNode(int);
+node* insert(node*, int);
+node *minValue(node*);
 int minimumValue(node*);
 int maximumValue(node*);
-struct node* search(node*, int);
+node* search(node*, int);
+node *successor(node*);
 void printTreeInOrder(node*);
 
 
@@ -48,10 +51,13 @@ void printTreeInOrder(node*);
 int main()
 {
     
+    // Variable declaration in the main function
     int myArray[SIZE] = { 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9 };
-    int choice = 7;
+    int choice = 8;
+     int insertValue = 0;
     int searchValue = 0;
     node *goal;
+    node *success;
     
     
     // Displays a welcome message to the console
@@ -63,13 +69,14 @@ int main()
     {
         
         // Displays a menu to the console
-        cout << "1. View Binary Tree " << endl;
+        cout << "1. Initialize and View Binary Tree " << endl;
         cout << "2. Insert New Key" << endl;
         cout << "3. Find Minimum and Maximum Value" << endl;
         cout << "4. Search Tree" << endl;
-        cout << "5. Quick Sort" << endl;
-        cout << "6. Print Tree" << endl;
-        cout << "7. Exit" << endl << endl;
+        cout << "5. View Successor" << endl;
+        cout << "6. Print Tree In Order" << endl;
+        cout << "7. Delete Key" << endl;
+        cout << "8. Exit" << endl << endl;
         
         
         cin >> choice;
@@ -90,7 +97,7 @@ int main()
         switch (choice)
         {
                 
-                // Case 1 will perform Selection Sort
+                // Case 1 will perform initialize and print the current BST
             case 1:
                 
                 system("CLS");
@@ -121,23 +128,27 @@ int main()
                 break;
                 
                 
-                // Case 2 will perform Bubble Sort
+                // Case 2 will allow the user to insert a new key
             case 2:
                 
                 system("CLS");
                 
-                cout << "Premade Binary Tree" << endl << endl;
+                cout << "What value would you like to insert? " << endl;
+                cin >> insertValue;
+                cout << endl << endl;
+                
+                insert(root, insertValue);
+                
                 
                 break;
                 
                 
-                // Case 3 will find the minimum and maximum value in the Binary Search Tree
+                // Case 3 will find the minimum and maximum value in the BST1
             case 3:
                 
                 system("CLS");
                 
                 cout << "The minimum value is: " << minimumValue(root) << endl << endl;
-                
                 cout << "The maximum value is: " << maximumValue(root) << endl << endl;
                 
                 
@@ -169,41 +180,61 @@ int main()
                     
                 }
                 
+                cout << endl << endl;
+                
                 break;
                 
-                // Case 5 will perform Quick Sort
+                
+                // Case 5 will print the successors
             case 5:
                 
                 system("CLS");
                 
-                cout << "_______________________________" << endl << endl;
+                success = successor(root);
                 
-                cout << "Original Arrays" << endl;
+                if(success != NULL)
+                {
+                    
+                    cout << "Successor is: " << endl << success->data;
+                    
+                }
                 
-                cout << "_______________________________" << endl << endl;
+                else
+                {
+                    
+                    cout << "No Successor" << endl << endl;
+                    
+                }
+                
+                cout << endl << endl;
                 
                 
                 break;
                 
                 
-                // Case 6 will perform Heap Sort
+                // Case 6 will print the BST in order
             case 6:
                 
                 system("CLS");
                 
-                cout << "_______________________________" << endl << endl;
+                cout << "Binary Tree In Order: " << endl;
                 
-                cout << "Original Arrays" << endl << endl;
+                printTreeInOrder(root);
                 
-                cout << "_______________________________" << endl << endl;
+                cout << endl << endl;
                 
-             
+
+                break;
+                
+                
+                // Case 7 will delete a key
+            case 7:
                 
                 break;
                 
                 
-                // Case 7 will exit the program
-            case 7:
+                // Case 8 will exit the program
+            case 8:
                 
                 exit(0);
                 
@@ -218,23 +249,16 @@ int main()
         
     } while (choice != 7);
     
-
     
-    
-
- 
-    
-    
-    
-   
     
     return 0;
     
 }
 
 
+
 // Function used to create a new node
-struct node *newNode(int data)
+node *newNode(int data)
 {
     // Creates a new node
     struct node *temp =  (struct node *)malloc(sizeof(struct node));
@@ -250,7 +274,7 @@ struct node *newNode(int data)
 
 
 // Function to insert a new node in the binary search tree
-struct node* insert(node* node, int data)
+node* insert(node* node, int data)
 {
     
     // Checks if the tree is empty
@@ -288,6 +312,28 @@ struct node* insert(node* node, int data)
 
 
 
+// Function used to find the minimum node value in the binary tree
+node *minValue(node *node)
+{
+    
+    // Node declaraton
+    struct node *current = node;
+    
+    // While loop to search down to find the leftmost leaf
+    while (current->leftChild != NULL)
+    {
+        
+        current = current->leftChild;
+        
+    }
+    
+    // Returns the minimum value
+    return current;
+    
+}
+
+
+
 // Function used to find the minimum value in the binary tree
 int minimumValue(node *node)
 {
@@ -304,7 +350,7 @@ int minimumValue(node *node)
     }
     
     // Returns the minimum value
-    return(current->data);
+    return (current->data);
     
 }
 
@@ -333,7 +379,7 @@ int maximumValue(node *node)
 
 
 // Function used to search for a particular value in the binary search tree
-struct node* search(node* node, int data)
+node* search(node* node, int data)
 {
     
     
@@ -359,18 +405,45 @@ struct node* search(node* node, int data)
 
 
 
-// Recursive function used to print the binary tree in order
-void printTreeInOrder(node *root)
+// Function used to returnn the successor of a node in a BST
+node *successor(node* node)
 {
     
-    if (root != NULL)
+    if (node->rightChild != NULL)
     {
         
-        printTreeInOrder(root->leftChild);
+        return minValue(node->rightChild);
         
-        cout << root->data << " " << endl;
+    }
+    
+    struct node *temp = node->parent;
+    
+    while(temp != NULL && node == temp->rightChild)
+    {
         
-        printTreeInOrder(root->rightChild);
+        node = temp;
+        temp = temp->parent;
+        
+    }
+    
+    return temp;
+    
+}
+
+
+
+// Recursive function used to print the binary tree in order
+void printTreeInOrder(node *node)
+{
+    
+    if (node != NULL)
+    {
+        
+        printTreeInOrder(node->leftChild);
+        
+        cout << node->data << "\t";
+        
+        printTreeInOrder(node->rightChild);
         
     }
     
