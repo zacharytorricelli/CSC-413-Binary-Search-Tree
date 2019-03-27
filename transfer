@@ -32,16 +32,15 @@ struct node
 
 
 // Global variable
-node *root = NULL;
+//node *root = NULL;
 
 
 // Function prototypes
 node *newNode(int);
-node* insert(node*, int);
-node *minValue(node*);
-int minimumValue(node*);
-int maximumValue(node*);
-node* search(node*, int);
+node *insert(node*, int);
+node *minimumValue(node*);
+node *maximumValue(node*);
+node *search(node*, int);
 node *successor(node*);
 void printTreeInOrder(node*);
 
@@ -54,8 +53,9 @@ int main()
     // Variable declaration in the main function
     int myArray[SIZE] = { 15, 6, 18, 3, 7, 17, 20, 2, 4, 13, 9 };
     int choice = 8;
-     int insertValue = 0;
+    int insertValue = 0;
     int searchValue = 0;
+    node *root = NULL;
     node *goal;
     node *success;
     
@@ -64,12 +64,24 @@ int main()
     cout << "Welcome to Zac's Binary Search Tree!" << endl;
     cout << "Please enter a number (1-7)." << endl << endl;
     
+    root = insert(root, 15);
+    insert(root, 6);
+    insert(root, 18);
+    insert(root, 3);
+    insert(root, 7);
+    insert(root, 17);
+    insert(root, 20);
+    insert(root, 2);
+    insert(root, 4);
+    insert(root, 13);
+    insert(root, 9);
+    
     
     do
     {
         
         // Displays a menu to the console
-        cout << "1. Initialize and View Binary Tree " << endl;
+        cout << "1. View Binary Tree " << endl;
         cout << "2. Insert New Key" << endl;
         cout << "3. Find Minimum and Maximum Value" << endl;
         cout << "4. Search Tree" << endl;
@@ -113,17 +125,6 @@ int main()
                 
                 cout << endl << endl;
                 
-                root = insert(root, 15);
-                insert(root, 6);
-                insert(root, 18);
-                insert(root, 3);
-                insert(root, 7);
-                insert(root, 17);
-                insert(root, 20);
-                insert(root, 2);
-                insert(root, 4);
-                insert(root, 13);
-                insert(root, 9);
                 
                 break;
                 
@@ -148,8 +149,8 @@ int main()
                 
                 system("CLS");
                 
-                cout << "The minimum value is: " << minimumValue(root) << endl << endl;
-                cout << "The maximum value is: " << maximumValue(root) << endl << endl;
+                cout << "The minimum value is: " << minimumValue(root)->data << endl << endl;
+                cout << "The maximum value is: " << maximumValue(root)->data << endl << endl;
                 
                 
                 break;
@@ -190,19 +191,26 @@ int main()
                 
                 system("CLS");
                 
-                success = successor(root);
+                cout << "Successor of the root is: ";
+                cout << successor(root)->data << endl << endl;
+                
+                //cout << "Successor of the Minimum Value is: ";
+                //minSucc = (successor(minimumValue(root)));
+               // cout << minSucc->data << endl << endl;
+                
+                success = successor(maximumValue(root));
                 
                 if(success != NULL)
                 {
                     
-                    cout << "Successor is: " << endl << success->data;
+                    cout << "Successor is: " << success->data << endl << endl;
                     
                 }
                 
                 else
                 {
                     
-                    cout << "No Successor" << endl << endl;
+                    cout << "No Successor of the Maximum Value" << endl << endl;
                     
                 }
                 
@@ -260,6 +268,7 @@ int main()
 // Function used to create a new node
 node *newNode(int data)
 {
+    
     // Creates a new node
     struct node *temp =  (struct node *)malloc(sizeof(struct node));
     
@@ -274,46 +283,43 @@ node *newNode(int data)
 
 
 // Function to insert a new node in the binary search tree
-node* insert(node* node, int data)
+node *insert(node* node, int data)
 {
     
-    // Checks if the tree is empty
-    if (node == NULL)
+    if(node == NULL)
     {
         
-        return (newNode(data));
+        return newNode(data);
         
     }
     
-    // Otherwise, carry on insertion
-    else
+    
+    if(data < node->data)
     {
         
-        if (data <= node->data)
-        {
+        struct node *tempL = insert(node->leftChild, data);
+        node->leftChild = tempL;
         
-            node->leftChild = insert(node->leftChild, data);
-            
-        }
-        
-        else
-        {
-            
-            node->rightChild = insert(node->rightChild, data);
-            
-        }
-        
-        
-        // Returns the new node
-        return node;
     }
     
+    else if(data > node->data)
+    {
+        
+        struct node *tempR = insert(node->rightChild, data);
+        node->rightChild = tempR;
+        
+        tempR->parent = node;
+        
+    }
+   
+    return node;
+
 }
 
 
 
 // Function used to find the minimum node value in the binary tree
-node *minValue(node *node)
+node *minimumValue(node *node)
 {
     
     // Node declaraton
@@ -334,30 +340,8 @@ node *minValue(node *node)
 
 
 
-// Function used to find the minimum value in the binary tree
-int minimumValue(node *node)
-{
-    
-    // Node declaraton
-    struct node *current = node;
-    
-    // While loop to search down to find the leftmost leaf
-    while (current->leftChild != NULL)
-    {
-        
-        current = current->leftChild;
-        
-    }
-    
-    // Returns the minimum value
-    return (current->data);
-    
-}
-
-
-
 // Function used to find the maximum value in the binary tree
-int maximumValue(node *node)
+node *maximumValue(node *node)
 {
     
     // Node declaraton
@@ -372,14 +356,14 @@ int maximumValue(node *node)
     }
     
     // Returns the minimum value
-    return(current->data);
+    return current;
     
 }
 
 
 
 // Function used to search for a particular value in the binary search tree
-node* search(node* node, int data)
+node *search(node* node, int data)
 {
     
     
@@ -412,11 +396,12 @@ node *successor(node* node)
     if (node->rightChild != NULL)
     {
         
-        return minValue(node->rightChild);
+        return minimumValue(node->rightChild);
         
     }
     
-    struct node *temp = node->parent;
+    struct node *temp;
+    temp = node->parent;
     
     while(temp != NULL && node == temp->rightChild)
     {
@@ -448,5 +433,6 @@ void printTreeInOrder(node *node)
     }
     
 }
+
 
 
