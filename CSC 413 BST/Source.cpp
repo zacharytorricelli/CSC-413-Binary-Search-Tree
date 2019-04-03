@@ -3,7 +3,7 @@
 *   BinarySearchTree
 *
 *   Created by Zachary Torricelli on 3/18/19.
-*   Copyright © 2019 Zachary Torricelli. All rights reserved.
+*   Copyright Â© 2019 Zachary Torricelli. All rights reserved.
 *
 *   Implement your binary search tree.
 *   You must implement all the following functions/ algorithms (in-order tree traversal, search for a particular key in a
@@ -120,7 +120,7 @@ void menu()
 
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			cout << endl << "Please enter a number (1-7)." << endl << endl;
+			cout << endl << "Please enter a number (1-8)." << endl << endl;
 			cin >> choice;
 
 		}
